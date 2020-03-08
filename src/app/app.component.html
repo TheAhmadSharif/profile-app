@@ -16,24 +16,43 @@
       <div style="margin-top: 40px;">
 
         <table class="table">
-          <tr *ngFor="let item of data$; let i = index">
+          <tr *ngFor="let item of data; let i = index">
+            <td>{{ i+1 }}</td>
              
-              <td style="min-width: 160px;"><pre>
-                {{ item | json }}
-              </pre></td>
-              <td><span (click)="removeItem(item.key)" class="btn">Delete</span></td>
-              <td><span (click)="editItem(item.key)" class="btn">Edit</span></td>
+              <td style="min-width: 160px;">
+                {{ item.data().name }}
+              </td>
+              <td><span (click)="removeItem(item)" class="btn">Delete</span></td>
+              <td><span (click)="editItem(item, newname)" class="btn">Edit</span></td>
           </tr>
         </table>
 
+
         <div style="margin-top: 10px">
-          <input type="text" placeholder="Name" #newmember class="form-control form-control-sm" style="margin-bottom: 20px;">
-          <button type="submit" (click)="addItem(newmember.value)" class="btn btn-sm btn-success">Add New Name</button>
-        </div>
+          <input type="text" placeholder="Name" [(ngModel)]="newname" class="form-control form-control-sm" style="margin-bottom: 20px;">
+          <button type="submit" (click)="addItem(newname)" class="btn btn-sm btn-success">Add New Name</button>
+        </div> <!-- End -->
+
+        <div *ngIf="editDiv" style="margin: 20px 0">
+         <div class="card">
+          <div class="card-body">
+
+            <button type="button" class="close" aria-label="Close" (click)="closeUpdate(editDiv)">
+              <span aria-hidden="true">&times;</span>
+            </button>
+
+
+            <h4>Update</h4>
+            <input type="hidden" placeholder="update Name" [(ngModel)]="id">
+            <input type="text" placeholder="update Name" [(ngModel)]="editMember" class="form-control form-control-sm">
+            <button type="submit" (click)="updateItem(id, editMember)" class="btn btn-sm btn-primary" style="margin: 10px 0;">Update</button>
+          </div> <!-- End card body-->
+         </div> <!-- End card -->
+        </div> <!-- End -->
+
+       
        
       </div>  <!-- End -->
-
-
         
     </div>  <!-- End component-div -->
 </div> <!--  End container -->  

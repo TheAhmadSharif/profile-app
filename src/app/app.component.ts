@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { Observable } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/firestore';
+import 'firebase/firestore';
 
 @Component({
   selector: 'app-root',
@@ -8,37 +10,62 @@ import { AngularFireDatabase } from 'angularfire2/database';
 })
 export class AppComponent {
   title = 'profile-app';
-  data$;
+  data;
+  newname;
   dataset:any = [];
+  editDiv:boolean  = false;
+  editMember: any;
+  id;
 
-  constructor(public db: AngularFireDatabase) {
-    db.list('/').valueChanges()
+
+
+  constructor(public firestore: AngularFirestore) {
+    firestore.collection('user').snapshotChanges()
       .subscribe(object => {
-          //Object.keys(object[0]).forEach(e=>{
 
-          // console.log(e);
-          // console.log(object[0][e].name);
-          // this.dataset.push({"key": e, "name": object[0][e].name});
-        //});
-        this.data$ = object;
-        console.log(this.data$[0]);
+        let arr = Array.from(object);
+        let arr1=[{}]
+
+        for(let i=0; i<arr.length;i++)
+        {
+          arr1[i] = arr[i].payload.doc;
+        }
+
+        this.data = arr1;
+        
     })
-    
-    console.log(this.data$);
+  }
 
-    
+  addItem(name:string) {
+   
+    let addDoc = this.firestore.collection('user').add({
+      name: name,
+    }).then(ref => {
+      this.newname = null;
+      console.log('Added document with ID: ', ref.id);
+    });
 
   }
 
   removeItem(item) {
+    let deleteDoc = this.firestore.collection('user').doc(item.id).delete();
+  }
+
+  editItem(item, name) {
+    this.editMember = item.data().name;
+    this.id = item.id;
+    this.editDiv =! this.editDiv;
     console.log(item);
-    this.db.object('/name/'+ item).remove();
   }
-  editItem(i) {
-    console.log('edititem');
+
+  updateItem(id, editMember) {
+    let setDoc = this.firestore.collection('user').doc(id).set({
+      name: editMember,
+    });
   }
-  addItem(name) {
-    this.db.list('/name').push({"name": name});
-    console.log(name);
+
+  closeUpdate(editDiv) {
+    this.editDiv =! this.editDiv;
   }
+  
 }

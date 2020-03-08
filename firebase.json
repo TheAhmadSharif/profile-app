@@ -1,0 +1,19 @@
+{
+  "hosting": [
+    {
+      "target": "profile-app",
+      "public": "dist/profile-app",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}
